@@ -1,8 +1,6 @@
-from datetime import datetime
+from model import Alarmamodel
 
-hora = int(datetime.now().hour)
-minutos = int(datetime.now().minute)
-print(hora)
-print(minutos)
-if hora == 11 and minutos == 12:
-    print(hora + ":" + minutos)
+alarmamodel2 = ""
+alarmamodel1 = Alarmamodel()
+alarma = isinstance(alarmamodel2, Alarmamodel)
+print(alarma)
