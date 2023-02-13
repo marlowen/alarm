@@ -2,10 +2,8 @@ from tkinter import Label, StringVar
 from tkinter import Button
 from tkinter import Frame
 from tkinter import *
-import threading
 from model import Alarmamodel
 from datetime import datetime
-import time
 
 
 class AlarmaView:
@@ -71,32 +69,29 @@ class AlarmaView:
         texto_boton_alarma1.set("Desactivar alarma 1")
         self.boton_alarma.configure(command=self.alarma_desactivar2)
         self.Alarmainstacia2 = Alarmamodel()
-        self.Alarmainstacia2.alarma_activa()
-        print("hola2")
-        _alarmahora.set(self.Alarmainstacia2.alarmahora)
+        self.Alarmainstacia2.alarma_activa(self.window, _alarmahora)
 
     def alarma_desactivar2(self,):
         texto_boton_alarma1.set("Activar alarma 1")
         self.boton_alarma.configure(command=self.alarma_lanzar2)
         _alarmahora.set("Alarma 1 desactivada")
-        self.Alarmainstacia2.alarma_desactivar()
+        self.Alarmainstacia2.alarma_desactivar(self.window)
 
     def alarma_lanzar3(self,):
         texto_boton_alarma2.set("Desactivar alarma 2")
         self.boton_alarma2.configure(command=self.alarma_desactivar3)
         self.Alarmainstacia3 = Alarmamodel()
-        self.Alarmainstacia3.alarma_activa()
-        _alarmahora3.set(self.Alarmainstacia3.alarmahora)
+        self.Alarmainstacia3.alarma_activa(self.window, _alarmahora3)
     
     def alarma_desactivar3(self,):
         texto_boton_alarma2.set("Activar alarma 2")
         self.boton_alarma2.configure(command=self.alarma_lanzar3)
         _alarmahora3.set("Alarma 2 desactivada")
-        self.Alarmainstacia3.alarma_desactivar()
+        self.Alarmainstacia3.alarma_desactivar(self.window)
     
     def close(self,):
         if texto_boton_alarma1.get() == "Desactivar alarma 1":
-            self.Alarmainstacia2.alarma_desactivar()
+            self.Alarmainstacia2.alarma_desactivar(self.window)
         if texto_boton_alarma2.get() == "Desactivar alarma 2":
-            self.Alarmainstacia3.alarma_desactivar()
+            self.Alarmainstacia3.alarma_desactivar(self.window)
         self.window.destroy()

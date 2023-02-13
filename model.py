@@ -1,5 +1,5 @@
 from datetime import datetime
-from tkinter import StringVar, IntVar
+from tkinter import IntVar
 from tkinter import messagebox
 from tkinter import ttk
 from tkinter import Checkbutton
@@ -10,7 +10,6 @@ from tkinter.font import Font
 from tkinter import *
 import time
 import webbrowser
-import threading
 
 
 def dia(D, L, M, Mi, J, V, S):
@@ -46,29 +45,13 @@ def dia(D, L, M, Mi, J, V, S):
     return False
 
 class Alarmamodel:
-    
-    alarmahora = ""
 
     def __init__(self,):
         pass
     
-    def alarma_hilo(self,):
-        self.alarma_hora = int(self.horaalarma.get())
-        self.alarma_minutos = int(self.minutosalarma.get())
-        self.top.destroy()
-        self.posponer = True
-        self.coincide_dia = dia(self.CheckVar1.get(), self.CheckVar2.get(), self.CheckVar3.get(), self.CheckVar4.get(), self.CheckVar5.get(), self.CheckVar6.get(), self.CheckVar7.get())
-        self.__class__.alarmahora = f"La alarma sonara a las {self.alarma_hora}:{self.alarma_minutos}"
-        while alarmaactiva:
-            hora = int(datetime.now().hour)
-            minutos = int(datetime.now().minute)
-            if hora == self.alarma_hora and minutos == self.alarma_minutos and self.coincide_dia == True:   
-                while self.posponer:
-                    webbrowser.open_new('https://www.youtube.com/watch?v=x4ZEezBOC7g')
-                    self.posponer = messagebox.askokcancel(message="¿Desea continuar?", title="Posponer")
-                    time.sleep(300)
-    
-    def alarma_activa(self,):
+    def alarma_activa(self, ventana, label1):
+        self.window = ventana
+        self.label1 = label1
         self._hora = []
         self._minutos = []
         self.rabo_hora = IntVar()
@@ -112,17 +95,32 @@ class Alarmamodel:
         self.diaV = Checkbutton(self.top, text="Viernes", variable=self.CheckVar6, font=("digitalk", 12)).pack(anchor=W)
         self.diaS = Checkbutton(self.top, text="Sabado", variable=self.CheckVar7, font=("digitalk", 12)).pack(anchor=W)
 
-        self.boton_activar_alarma = Button(self.top, text="Activar", font=("digitalk", 20) , command=self.alarma_hilo_lanzar)
+        self.boton_activar_alarma = Button(self.top, text="Activar", font=("digitalk", 20) , command=lambda: self.alarma_hilo_lanzar(self.window))
         self.boton_activar_alarma.pack(anchor="center", side="right", padx=15, pady=15)
         self.top.mainloop()
 
-    def alarma_hilo_lanzar(self,):
-        global alarmaactiva
-        alarmaactiva = True
-        self.lanzar_hilo = threading.Thread(target=self.alarma_hilo)
-        self.lanzar_hilo.start()
-
-    def alarma_desactivar(self,):
-        global alarmaactiva
+    def alarma_hilo_lanzar(self, ventana):
+        self.window = ventana
+        self.alarma_hora = int(self.horaalarma.get())
+        self.alarma_minutos = int(self.minutosalarma.get())
+        self.top.destroy()
+        self.posponer = True
+        self.coincide_dia = dia(self.CheckVar1.get(), self.CheckVar2.get(), self.CheckVar3.get(), self.CheckVar4.get(), self.CheckVar5.get(), self.CheckVar6.get(), self.CheckVar7.get())
+        self.label1.set(f"La alarma sonara a las {self.alarma_hora}:{self.alarma_minutos}")
+        self.alarma_lanzar2()
+        
+    def alarma_lanzar2(self,): 
+        hora = int(datetime.now().hour)
+        minutos = int(datetime.now().minute)
+        if hora == self.alarma_hora and minutos == self.alarma_minutos and self.coincide_dia == True:   
+            while self.posponer:
+                webbrowser.open_new('https://www.youtube.com/watch?v=x4ZEezBOC7g')
+                self.posponer = messagebox.askokcancel(message="¿Desea continuar?", title="Posponer")
+                if self.posponer is True:
+                    time.sleep(300)
+        self.alarma_despertador = self.window.after(30000, self.alarma_lanzar2)
+        
+    def alarma_desactivar(self, ventana):
         messagebox.showinfo(message="Desactivaste la alarma", title="Alarma desactivada")
-        alarmaactiva = False
+        self.window = ventana
+        self.window.after_cancel(self.alarma_despertador)
