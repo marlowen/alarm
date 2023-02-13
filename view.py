@@ -1,13 +1,9 @@
-from tkinter import Label, StringVar, IntVar
+from tkinter import Label, StringVar
 from tkinter import Button
 from tkinter import Frame
-from tkinter import Toplevel
-from tkinter import ttk
-from tkinter import messagebox
 from tkinter import *
 import threading
-from tkinter.font import Font
-from model import dia, Alarmamodel
+from model import Alarmamodel
 from datetime import datetime
 import time
 
@@ -62,27 +58,23 @@ class AlarmaView:
         self.boton_cerrar = Button(self.frame, text="Cerrar" , font=("digitalk", 20), command=self.close)
         self.boton_cerrar.pack(anchor="center", side="bottom", padx=15, pady=15)
 
-    def hora_hilo(self,):
-        while True:
-            self.horaminutos = datetime.now()
-            self.horaminutos = self.horaminutos.strftime("%H:%M:%S")
-            hora.set(self.horaminutos)
-            self.fechahoy = datetime.now()
-            self.fechahoy = self.fechahoy.strftime("%A, %d/%m/%Y")
-            fecha.set(self.fechahoy)
-            time.sleep(0.5)
-        
     def alarma_lanzar(self,):
-        lanzar_hilo = threading.Thread(target=self.hora_hilo)
-        lanzar_hilo.start()
+        self.horaminutos = datetime.now()
+        self.horaminutos = self.horaminutos.strftime("%H:%M:%S")
+        hora.set(self.horaminutos)
+        self.fechahoy = datetime.now()
+        self.fechahoy = self.fechahoy.strftime("%A, %d/%m/%Y")
+        fecha.set(self.fechahoy)
+        self.frame.after(500, self.alarma_lanzar)
     
     def alarma_lanzar2(self,):
         texto_boton_alarma1.set("Desactivar alarma 1")
         self.boton_alarma.configure(command=self.alarma_desactivar2)
         self.Alarmainstacia2 = Alarmamodel()
         self.Alarmainstacia2.alarma_activa()
+        print("hola2")
         _alarmahora.set(self.Alarmainstacia2.alarmahora)
-    
+
     def alarma_desactivar2(self,):
         texto_boton_alarma1.set("Activar alarma 1")
         self.boton_alarma.configure(command=self.alarma_lanzar2)
